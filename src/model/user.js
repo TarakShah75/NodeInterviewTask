@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("json-web-token");
+const res = require("express/lib/response");
 
 const userSchema = new mongoose.Schema({
      name :{
@@ -49,6 +50,26 @@ const userSchema = new mongoose.Schema({
      }]
 
 });
+//for create jwt token
+
+// userSchema.methods.generateAuthToken = async function(){
+//     try{
+//         console.log(this._id);
+//         const token = jwt.sign({_id:this._id.toString()},process.env.SECRET_KEY);
+//         //this.tokens = this.tokens.concat({token:token});
+//         //await this.save();
+//         console.log
+//         return token;
+//     }catch(error){
+//           res.send("the error part"+error);
+//           console.log("the error part"+error);
+//     }
+    
+// } 
+
+//for bcrypt password
+
+
 userSchema.pre("save",async function(next){
     if(this.isModified("password")){
                console.log(`the current password is ${this.password}`);
@@ -58,18 +79,6 @@ userSchema.pre("save",async function(next){
     }
     next();
 });
-userSchema.methods.generateAuthToken = async function(){
-    try{
-           console.log(this._id);
-           const tokenA = jwt.sign({_id:this._id},"amitupadhyayisfromambajiandlivinginahmedabad");
-           this.tokens =this.tokens.concat({token:tokenA});
-           await this.save();
-           return tokenA;
-    }catch(error){
-           res.send(error);
-    }
-   };
-
 
 const User = new mongoose.model("User",userSchema);
 
